@@ -1,40 +1,6 @@
 # Master_Project
 Group 3 Masters Project Trajectory Prediction of Vehicle
 
-# Execute the tasks one by by accordingly, Since the dataset is huge we could not be able to keep it in whole in one file.
-
-Perform the tasks in below format and the results are saved in the diffirent files.
-
-# Task wise execution (Task 1.ppt)
-
-Task 1 : Prepared a presentation on datasets
-
-# Feature Selection (2A,2B,2C,2D).py files
-
-Task 2 : Calcuated the eculidean distances as per the feature selction and  Extracted the required features.
-
-
-# a trajectory prediction model (CNN_lstm_Model, GRU_Model).py files
-
-Bulid the models using the algorithms and Calculated the accuracy values for the models.
-
-# Task  (prediction.py)
-
-Calculated the ade, fde values of different models.
-
-# Task (collision_percentage.py)
-
-Calculated the percentage of collisions of the models pass the model according to the requirement.
-
-# Task 6 (plot.py)
-
-Plotted a graphs of prediction and compared with actual plot.
-
-
-
-
-# Master Project Trajectory Prediction of Vehicle
-
 
 ##Table of contents
 
@@ -44,6 +10,7 @@ Plotted a graphs of prediction and compared with actual plot.
 * [Model Plot](#Model-Plot)
 
 # Project Summary
+
 Around the world, car accidents result in a lot of injuries and fatalities each year.
 Through the recent use of driver-assistance systems, this number has somewhat decreased.
 Reducing this number can be greatly helped by the development of driver-assistance systems, sometimes known as automated driving systems.
@@ -56,6 +23,37 @@ The models we used can predict the vehicle's future path on any freeway only by 
 along with that For our data set, we have used a  plot, which compares the predicted data with real data.
 
 # Project Implementation
+
+ Execute the tasks one by by accordingly, Since the dataset is huge we could not be able to keep it in whole in one file.
+
+Perform the tasks in below format and the results are saved in the diffirent files.
+
+1.Task wise execution (Task 1.ppt)
+
+Task 1 : Prepared a presentation on datasets
+
+2. Feature Selection (2A,2B,2C,2D).py files
+
+Task 2 : Calcuated the eculidean distances as per the feature selction and  Extracted the required features.
+
+
+3. a trajectory prediction model (CNN_lstm_Model, GRU_Model).py files
+
+Bulid the models using the algorithms and Calculated the accuracy values for the models.
+
+4. Task  (prediction.py)
+
+Calculated the ade, fde values of different models.
+
+5. Task (collision_percentage.py)
+
+Calculated the percentage of collisions of the models pass the model according to the requirement.
+
+6. Task 6 (plot.py)
+
+Plotted a graphs of prediction and compared with actual plot.
+
+
 
 # Code Explanation
 #### Importing all necessary libraries
@@ -178,8 +176,36 @@ def buildModel():
 ```
 
 
+#### Here in the below plotting of the graph
 
-
+def MakePlots(x,y_actual):
+    models  = load_models()
+    #DL models
+    pred_ = []
+    for i in models:
+        #plt = plot(i, x, y_actual)
+        #Saving the plots
+        # checking which model it is
+        if 'SVR' in str(i.__repr__):
+            pred = svmpredict(i, X_feature[i])
+        else:
+            pred = predict(i, x,x.shape[-1])
+        pred_.append(pred.ravel())
+    print(pred_)
+    plt.figure(figsize=(30,15))
+    plt.tight_layout()
+    #plt.plot(x.ravel(), label="Actual X values", c="red")
+    plt.ylim([0,1])
+    #print(np.mean(y_actual.ravel()))
+    plt.plot(smooth(x.ravel(),10), label="Actual X values", c="red", linewidth=7.0)
+    plt.plot(smooth(y_actual.ravel(),10),'--', label="Actual Y values", c="red", linewidth=7.0)
+   # plt.plot(smooth(pred_[0],20),'o-', label=f"{models[0].name} path", c = "cyan" ,linewidth=3.0)
+    plt.plot(smooth(pred_[1],10),'o-', label=f"{models[1].name} path", c = "Blue" ,linewidth=2.0)
+    plt.plot(smooth(pred_[2],10), 'o--',label=f"{models[2].name} path", c = "green",linewidth=1.0 )
+    plt.xlabel("X-plane")
+    plt.ylabel("Y-plane")
+    plt.legend()
+    plt.savefig('output.png')
 
 
 
