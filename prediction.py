@@ -2,12 +2,14 @@
 """
 Created on Fri Jul  1 11:55:29 2022
 
-@author: saikumar
+@author: Saikumar
 """
 from tensorflow.keras.models import load_model
 import numpy as np
 import pandas as pd
+import itertools
 import pickle
+from GRU_implemetation import * 
 from pytp.utils.evaluate import get_ade,get_fde
 def load_models():
     
@@ -34,49 +36,54 @@ def predict(model, x,n_features):
 def model_predictions(x, y,n_features):
     ade_scores = []
     fde_scores = []
+    avg_ade, avg_fde = 0 , 0
+    total_ade_scores = []
+    total_fde_scores = []
     models  = load_models()
     #DL models
+    models = models[1:]
     for i in models:
-        pred = predict(i, x, n_features)
-        ade = get_ade(pred, y)
-        y = y.reshape(1,pred.shape[1],pred.shape[2])
-        fde = get_fde(pred, y)
+        for j in range(len(x)):
+            pred = predict(i, x[j], n_features)
+            ade = get_ade(pred, y[j])
+            new_y = y[j].reshape(1,pred.shape[1],pred.shape[2])
+            #print(new_y)
+            fde = get_fde(pred, new_y)
+            ade_scores.append(ade)
+            fde_scores.append(fde)
+        #print(ade_scores)
+        total_ade_scores.append(sum(ade_scores)/len(ade_scores))
+        total_fde_scores.append(sum(fde_scores)/len(fde_scores))
+    # ml modell
+    #print('total ade', total_ade_scores)
+    #print('total fde',total_fde_scores)
+    '''
+    model4 = mlModel()
+    for i in range(len(x)):
+        pred = svmpredict(model4, x[i])
+        ade = get_ade(pred, y[i])
+        fde = get_fde(pred.reshape(1,pred.shape[0],pred.shape[1]), y[i].reshape(1,pred.shape[0],pred.shape[1]))
         ade_scores.append(ade)
         fde_scores.append(fde)
-    # ml modell
-    model4 = mlModel()
-    pred = svmpredict(model4, x)
-    ade = get_ade(pred, y)
-    fde = get_fde(pred.reshape(1,pred.shape[0],pred.shape[1]), y.reshape(1,pred.shape[0],pred.shape[1]))
-    ade_scores.append(ade)
-    fde_scores.append(fde)
-    return pd.DataFrame({'fde_score':fde_scores,'ade_score':ade_scores}, index=['LSTM','GRU Model','CNN LSTM','SVM_multioutput'])
+    total_ade_scores.append(sum(ade_scores)/len(ade_scores))
+    total_fde_scores.append(sum(fde_scores)/len(fde_scores))
+    print(total_ade_scores, total_fde_scores)
+    '''
+    return pd.DataFrame({'fde_score':total_fde_scores,'ade_score':total_ade_scores}, index=['GRU Model','CNN LSTM'])
     
 
 if __name__ == '__main__':
-    # this is scaled values
-    x = np.array([[0.99821399, 0.05973963],
-           [0.99822836, 0.05949905],
-           [0.99824323, 0.05924908],
-           [0.9982581 , 0.058998  ],
-           [0.99827306, 0.05874426],
-           [0.99828811, 0.05848796],
-           [0.99830159, 0.05825754],
-           [0.99831644, 0.05800247]])
-    
-    y_actual  = np.array([[0.9983311 , 0.05774963],
-           [0.99834557, 0.05749898],
-           [0.99835985, 0.05725049],
-           [0.99837394, 0.05700414],
-           [0.99838777, 0.05676137],
-           [0.99840151, 0.05651919],
-           [0.99841516, 0.05627761],
-           [0.99842855, 0.05603953],
-           [0.99844193, 0.05580058],
-           [0.99845507, 0.05556508],
-           [0.99846811, 0.05533015],
-           [0.998481  , 0.05509719]])
-    
+    '''
+    stack = MakeInputOutput(dataset)
+    # normalized the dataset
+    X, y = split_sequences(stack, n_steps_in, n_steps_out)
+    X = normalize(X.reshape(X.shape[0], X.shape[1]*X.shape[2])).reshape(X.shape[0], X.shape[1],X.shape[2])
+    '''
+
+    x = X[:]
+    y_actual  = y[:]
+    #x = X
+    #y_actual  = y
     score_df = model_predictions(x, y_actual, x.shape[-1]).sort_values(by=['fde_score','ade_score'])
     print(score_df)
     

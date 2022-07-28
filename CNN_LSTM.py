@@ -82,8 +82,8 @@ X, y = split_sequences(stack, n_steps_in, n_steps_out)
 #X = normalize(X.reshape(X.shape[0], X.shape[1]*X.shape[2])).reshape(X.shape[0], X.shape[1],X.shape[2])
 # adding new feature obstED to the base model
 #X = addNewFeature(X,['ObstED'],'features/features.csv')
-X_train,y_train = X[:80000],y[:80000]
-X_valid,y_valid = X[80000:82000],y[80000:82000]
+X_train,y_train = X[:],y[:]
+X_valid,y_valid = X[:],y[:]
 # the dataset knows the number of features, e.g. 2
 n_features = X.shape[2]
 

@@ -12,8 +12,8 @@ from math import sqrt
 import itertools
 from CNN_LSTM import *
 
-model = load_model('CNNLSTM_model')
-dataset = pd.read_csv("features/features.csv")[:80000]
+model = load_model('GRU_Model')
+dataset = pd.read_csv("features/features.csv")#[:80000]
 
 def buildDataset(df):
     X_pred,Y_pred = [],[]
@@ -86,6 +86,7 @@ def CalculateED(df, x , y):
 
 
 df = CalculateED(df_new,'predicted_X','predicted_Y')
+df.to_csv("features.csv") 
 print(df)
 Collision = np.array(df['Collision'].value_counts())
 print(f'Percentage of Collision = {round((Collision[1]/Collision[0])* 100,2)}%')
