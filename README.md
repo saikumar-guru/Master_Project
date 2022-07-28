@@ -37,19 +37,19 @@ Task 2 : Calcuated the eculidean distances as per the feature selction and  Extr
 2. Feature Selection (2A,2B,2C,2D).py files
 
 
-3. a trajectory prediction model (CNN_lstm_Model, GRU_Model).py files
+Task 3. a trajectory prediction model (CNN_lstm_Model, GRU_Model).py files
 
 Bulid the models using the algorithms and Calculated the accuracy values for the models.
 
-4. Task  (prediction.py)
+Task 4. (prediction.py)
 
 Calculated the ade, fde values of different models.
 
-5. Task (collision_percentage.py)
+Task 5. (collision_percentage.py)
 
 Calculated the percentage of collisions of the models pass the model according to the requirement.
 
-6. Task 6 (plot.py)
+Task 6.  (plot.py)
 
 Plotted a graphs of prediction and compared with actual plot.
 
