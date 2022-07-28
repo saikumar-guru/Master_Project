@@ -32,9 +32,9 @@ Perform the tasks in below format and the results are saved in the diffirent fil
 
 Task 1 : Prepared a presentation on datasets
 
-2. Feature Selection (2A,2B,2C,2D).py files
-
 Task 2 : Calcuated the eculidean distances as per the feature selction and  Extracted the required features.
+
+2. Feature Selection (2A,2B,2C,2D).py files
 
 
 3. a trajectory prediction model (CNN_lstm_Model, GRU_Model).py files
