@@ -154,24 +154,27 @@ def buildModel():
     return model
 ```
 
-#### Here in the below we are defining multi-step encoder decoder model
+#### Here in the below we are defining GRU model
 ```
-def buildModel():
-    model = Sequential(name="lstm_model")
-    model.add(LSTM(400, activation='relu', input_shape=(n_steps_in, n_features)))
-    model.add(RepeatVector(n_steps_out))
-    model.add(LSTM(200, activation='relu', return_sequences=True))
-    model.add(TimeDistributed(Dense(2))) # output layer
-    #model.add(Bidirectional(LSTM(50, activation='relu'), input_shape=(n_steps_in, n_features)))
-    #model.add(Dense(n_features))
+def buildModel(X_train):
+    ##### Step 3 - Specify the structure of a Neural Network
+    model = Sequential(name="GRU_Model") # Model
+    model.add(Input(shape=(X_train.shape[1],X_train.shape[2]), name='Input-Layer')) # Input Layer - need to speicfy the shape of inputs
+    model.add(Bidirectional(GRU(units=64, activation='tanh', recurrent_activation='sigmoid', stateful=False), name='Hidden-GRU-Encoder-Layer')) # Encoder Layer
+    model.add(RepeatVector(n_steps_out, name='Repeat-Vector-Layer')) # Repeat Vector
+    model.add(Bidirectional(GRU(units=32, activation='tanh', recurrent_activation='sigmoid', stateful=False, return_sequences=True), name='Hidden-GRU-Decoder-Layer')) # Decoder Layer
+    #ouput layer
+    model.add(TimeDistributed(Dense(units=2, activation='linear'), name='Output-Layer')) # Output Layer, Linear(x) = x
+
     model.compile(optimizer='adam', 
               loss='mean_squared_error',
               metrics=['MeanSquaredError', 'MeanAbsoluteError','accuracy'], 
               loss_weights=None, 
-              weighted_metrics=None, 
+              weighted_metrics=None,
               run_eagerly=None, 
               steps_per_execution=None 
              )
+    
     return model
 ```
 
@@ -194,12 +197,12 @@ def MakePlots(x,y_actual):
     print(pred_)
     plt.figure(figsize=(30,15))
     plt.tight_layout()
-    #plt.plot(x.ravel(), label="Actual X values", c="red")
+    
     plt.ylim([0,1])
     #print(np.mean(y_actual.ravel()))
     plt.plot(smooth(x.ravel(),10), label="Actual X values", c="red", linewidth=7.0)
     plt.plot(smooth(y_actual.ravel(),10),'--', label="Actual Y values", c="red", linewidth=7.0)
-   # plt.plot(smooth(pred_[0],20),'o-', label=f"{models[0].name} path", c = "cyan" ,linewidth=3.0)
+  
     plt.plot(smooth(pred_[1],10),'o-', label=f"{models[1].name} path", c = "Blue" ,linewidth=2.0)
     plt.plot(smooth(pred_[2],10), 'o--',label=f"{models[2].name} path", c = "green",linewidth=1.0 )
     plt.xlabel("X-plane")
